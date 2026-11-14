@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>CV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================
+       THÈMES
+       - "home"  : écrans d'accueil (langue) et liste des CV
+       - "ocean" / "pop" / "paper" : un par style de CV
+       ========================================================= */
+    body[data-theme="home"] {
+      --page: #f6f5f1;
+      --head-bg: #f6f5f1;
+      --head-text: #16181d;
+      --head-muted: #6a6f7a;
+      --surface: #ffffff;
+      --text: #16181d;
+      --muted: #6a6f7a;
+      --accent: #16181d;
+      --font-title: "Playfair Display", Georgia, serif;
+      --font-body: "Montserrat", system-ui, sans-serif;
+    }
+
+    body[data-theme="ocean"] {
+      --page: #eaf4fc;
+      --head-bg: #0b1846;
+      --head-text: #ffffff;
+      --head-muted: #a9c6e8;
+      --surface: #ffffff;
+      --text: #0b1846;
+      --muted: #4b5d80;
+      --accent: #3fa9f5;
+      --chip-bg: transparent;
+      --chip-text: #cfe3f7;
+      --chip-border: rgba(191, 227, 251, .35);
+      --chip-active-bg: #3fa9f5;
+      --chip-active-text: #0b1846;
+      --chip-active-border: #3fa9f5;
+      --frame-border: 1px solid #c9def2;
+      --frame-shadow: 0 10px 30px rgba(11, 24, 70, .12);
+      --radius: 14px;
+      --chip-radius: 999px;
+      --font-title: "Playfair Display", Georgia, serif;
+      --font-body: "Montserrat", system-ui, sans-serif;
+      --btn-primary-bg: #0b1846;
+      --btn-primary-text: #ffffff;
+      --btn-border: 1px solid #c9def2;
+      --btn-shadow: none;
+    }
+    body[data-theme="ocean"] .viewer-head {
+      background-image:
+        repeating-radial-gradient(circle at 85% 20%, transparent 0 18px, rgba(63,169,245,.16) 18px 19px),
+        repeating-radial-gradient(circle at 10% 110%, transparent 0 22px, rgba(63,169,245,.10) 22px 23px);
+    }
+
+    body[data-theme="pop"] {
+      --page: #faf7ef;
+      --head-bg: #faf7ef;
+      --head-text: #111111;
+      --head-muted: #555555;
+      --surface: #ffffff;
+      --text: #111111;
+      --muted: #444444;
+      --accent: #ef4444;
+      --chip-bg: #ffffff;
+      --chip-text: #111111;
+      --chip-border: #111111;
+      --chip-active-bg: #dfe89a;
+      --chip-active-text: #111111;
+      --chip-active-border: #111111;
+      --frame-border: 2px solid #111111;
+      --frame-shadow: 6px 6px 0 #c9c3f0;
+      --radius: 14px;
+      --chip-radius: 10px;
+      --font-title: "Space Grotesk", system-ui, sans-serif;
+      --font-body: "Space Grotesk", system-ui, sans-serif;
+      --btn-primary-bg: #c9c3f0;
+      --btn-primary-text: #111111;
+      --btn-border: 2px solid #111111;
+      --btn-shadow: 3px 3px 0 #111111;
+    }
+    body[data-theme="pop"] .viewer-head { border-bottom: 2px solid #111; }
+    body[data-theme="pop"] .tabs button { box-shadow: 3px 3px 0 #111; font-weight: 500; }
+    body[data-theme="pop"] .tabs button[aria-selected="true"] { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #111; }
+    body[data-theme="pop"] .viewer-head h1 { font-weight: 700; letter-spacing: -.02em; }
+    body[data-theme="pop"] .viewer-head h1::after { content: " #"; color: var(--accent); }
+
+    body[data-theme="paper"] {
+      --page: #f2f1ed;
+      --head-bg: #ffffff;
+      --head-text: #111111;
+      --head-muted: #555555;
+      --surface: #ffffff;
+      --text: #111111;
+      --muted: #555555;
+      --accent: #2b4fbf;
+      --chip-bg: transparent;
+      --chip-text: #444444;
+      --chip-border: transparent;
+      --chip-active-bg: transparent;
+      --chip-active-text: #111111;
+      --chip-active-border: transparent;
+      --frame-border: 1px solid #d6d4cc;
+      --frame-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+      --radius: 2px;
+      --chip-radius: 0;
+      --font-title: "EB Garamond", "Times New Roman", serif;
+      --font-body: "EB Garamond", "Times New Roman", serif;
+      --btn-primary-bg: #111111;
+      --btn-primary-text: #ffffff;
+      --btn-border: 1px solid #111111;
+      --btn-shadow: none;
+    }
+    body[data-theme="paper"] .viewer-head { border-bottom: 1px solid #111; }
+    body[data-theme="paper"] .viewer-head h1 { text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
+    body[data-theme="paper"] .tabs button { font-size: 1.05rem; font-variant: small-caps; letter-spacing: .05em; }
+    body[data-theme="paper"] .tabs button[aria-selected="true"] { box-shadow: inset 0 -2px 0 #111; }
+
+    /* =========================================================
+       COMMUN
+       ========================================================= */
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--page);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background-color .35s ease, color .35s ease;
+    }
+    [hidden] { display: none !important; }
+    h1, h2 { font-family: var(--font-title); font-weight: 600; margin: 0; line-height: 1.15; }
+    a { color: inherit; }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .88rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 4px 0;
+    }
+    .back:hover { color: var(--text); }
+
+    /* ---------- Écran 1 : choix de la langue ---------- */
+    .center {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      text-align: center;
+    }
+    .home-title { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .home-name { font-size: clamp(2rem, 7vw, 3.4rem); }
+    .home-cv {
+      font-family: var(--font-body);
+      font-size: clamp(.85rem, 2.4vw, 1rem);
+      font-weight: 500;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .home-cv::before, .home-cv::after { content: ""; width: 36px; height: 1px; background: currentColor; opacity: .5; }
+    .home-sub { color: var(--muted); margin: 28px 0 32px; font-size: .95rem; letter-spacing: .02em; }
+    .langs { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .lang {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 160px;
+      padding: 22px 16px;
+      background: var(--surface);
+      border: 1px solid #e3e1da;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    .lang:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.08); border-color: #c9c6bc; }
+    .lang .code { font-family: var(--font-title); font-size: 1.9rem; }
+    .lang .name { font-size: .9rem; color: var(--muted); }
+    .lang.soon { opacity: .45; pointer-events: none; }
+    .lang.soon .name::after { content: " · bientôt"; }
+
+    /* ---------- Écran 2 : liste des CV ---------- */
+    .list-wrap { max-width: 720px; margin: 0 auto; padding: 40px 16px 56px; }
+    .list-wrap h2 { font-size: clamp(1.6rem, 5vw, 2.2rem); margin: 18px 0 8px; }
+    .list-wrap .lead { color: var(--muted); margin: 0 0 28px; }
+    .cards { display: grid; gap: 14px; }
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid #e3e1da;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.07); }
+    .swatch {
+      flex: 0 0 auto;
+      width: 64px; height: 64px;
+      border-radius: 10px;
+    }
+    .swatch.ocean { background: repeating-radial-gradient(circle at 80% 20%, #0b1846 0 9px, #16296a 9px 10px); box-shadow: inset 0 -14px 0 #3fa9f5; }
+    .swatch.pop   { background: linear-gradient(135deg, #dfe89a 0 50%, #c9c3f0 50%); border: 2px solid #111; box-shadow: 3px 3px 0 #111; }
+    .swatch.paper { background: #fff repeating-linear-gradient(#fff 0 8px, #d9d9d9 8px 9px); border: 1px solid #ccc; }
+    .card-text { flex: 1; min-width: 0; }
+    .card-title { font-weight: 600; font-size: 1.05rem; }
+    .card-desc { color: var(--muted); font-size: .9rem; margin-top: 3px; }
+    .arrow { color: var(--muted); font-size: 1.3rem; padding-right: 6px; }
+
+    /* ---------- Écran 3 : visionneuse ---------- */
+    .viewer-screen { display: flex; flex-direction: column; min-height: 100vh; }
+    .viewer-head {
+      background-color: var(--head-bg);
+      color: var(--head-text);
+      padding: 14px 16px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      transition: background-color .35s ease;
+    }
+    .viewer-head .inner { max-width: 1100px; margin: 0 auto; }
+    .viewer-head .back { color: var(--head-muted); }
+    .viewer-head .back:hover { color: var(--head-text); }
+    .viewer-head h1 { font-size: clamp(1.3rem, 3.5vw, 1.8rem); margin-top: 6px; }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      margin-top: 14px;
+      padding: 2px 6px 6px 2px;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tabs button {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font: inherit;
+      font-size: .92rem;
+      padding: 8px 16px;
+      cursor: pointer;
+      white-space: nowrap;
+      color: var(--chip-text);
+      background: var(--chip-bg);
+      border: 2px solid var(--chip-border);
+      border-radius: var(--chip-radius);
+      transition: background-color .2s, color .2s, transform .15s, box-shadow .15s;
+    }
+    .tabs button:hover { transform: translateY(-1px); }
+    .tabs button[aria-selected="true"] {
+      color: var(--chip-active-text);
+      background: var(--chip-active-bg);
+      border-color: var(--chip-active-border);
+      font-weight: 600;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid currentColor; flex: 0 0 auto; }
+
+    .viewer-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 28px;
+      gap: 16px;
+    }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .desc { color: var(--muted); margin: 0; }
+    .actions { display: flex; gap: 10px; }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 500;
+      padding: 9px 16px;
+      border-radius: var(--chip-radius);
+      border: var(--btn-border);
+      box-shadow: var(--btn-shadow);
+      color: var(--text);
+      background: var(--surface);
+      transition: transform .15s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary { background: var(--btn-primary-bg); color: var(--btn-primary-text); }
+    .viewer {
+      flex: 1;
+      min-height: 75vh;
+      background: var(--surface);
+      border: var(--frame-border);
+      border-radius: var(--radius);
+      box-shadow: var(--frame-shadow);
+      overflow: hidden;
+    }
+    .viewer iframe { width: 100%; height: 100%; min-height: 75vh; border: 0; display: block; }
+    .mobile-note { display: none; padding: 36px 16px; text-align: center; color: var(--muted); }
+    .mobile-note p { margin: 0 0 16px; }
+
+    /* Pages du CV dessinées par PDF.js (téléphone uniquement) */
+    .pages { display: none; }
+    .pages canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .15);
+    }
+    .pages-status { padding: 36px 16px; text-align: center; color: var(--muted); }
+
+    @media (max-width: 700px) {
+      .viewer iframe { display: none; }
+      .pages { display: flex; flex-direction: column; gap: 10px; padding: 10px; }
+      .viewer.failed .pages { display: none; }
+      .viewer.failed .mobile-note { display: block; }
+      .viewer { min-height: auto; flex: 0; }
+      .viewer-main { padding-left: 10px; padding-right: 10px; }
+      .actions { width: 100%; }
+      .actions .btn { flex: 1; text-align: center; }
+      .lang { width: 140px; }
+    }
+  </style>
+</head>
+<body data-theme="home">
+
+  <!-- ÉCRAN 1 : choix de la langue (page partagée) -->
+  <section id="screen-home" class="center" hidden>
+    <!-- ✏️ Ton nom (repris aussi dans les autres écrans via NAME plus bas) -->
+    <h1 class="home-title">
+      <span class="home-name" data-name></span>
+      <span class="home-cv">Curriculum Vitae</span>
+    </h1>
+    <p class="home-sub">Choisissez une langue · Choose a language</p>
+    <div class="langs" id="langs"></div>
+  </section>
+
+  <!-- ÉCRAN 2 : liste des CV d'une langue -->
+  <section id="screen-list" hidden>
+    <div class="list-wrap">
+      <a class="back" href="#/" id="list-back"></a>
+      <h2 id="list-title"></h2>
+      <p class="lead" id="list-lead"></p>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN 3 : un CV, avec les autres CV de la même langue en haut -->
+  <section id="screen-viewer" class="viewer-screen" hidden>
+    <header class="viewer-head">
+      <div class="inner">
+        <a class="back" id="viewer-back"></a>
+        <h1 data-name></h1>
+        <nav class="tabs" id="tabs" role="tablist"></nav>
+      </div>
+    </header>
+    <main class="viewer-main">
+      <div class="bar">
+        <p class="desc" id="desc"></p>
+        <div class="actions">
+          <a class="btn" id="open" target="_blank" rel="noopener"></a>
+          <a class="btn primary" id="download" download></a>
+        </div>
+      </div>
+      <div class="viewer">
+        <iframe id="frame" title="CV"></iframe>
+        <div class="pages" id="pages"></div>
+        <div class="mobile-note">
+          <p id="mobile-text"></p>
+          <a class="btn primary" id="open-mobile" target="_blank" rel="noopener"></a>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <script>
+    // =========================================================
+    // ✏️ CONFIGURATION — c'est la seule partie à modifier
+    // =========================================================
+
+    const NAME = "Camille-Astrid Rodriguès";
+
+    // Langues proposées sur la page d'accueil (dans cet ordre).
+    const LANGS = [
+      { code: "fr", label: "FR", name: "Français" },
+      { code: "en", label: "EN", name: "English" },
+    ];
+
+    // Liste des CV : une ligne = un CV = un PDF dans le dossier "cv/".
+    // L'ordre des lignes = l'ordre d'affichage dans la liste et les onglets.
+    //
+    //  - id    : nom court, sans espace ni accent → lien direct : monsite/#/fr/mon-id
+    //  - lang  : "fr" ou "en"
+    //  - label : nom du CV affiché sur la carte et l'onglet (dans la langue du CV)
+    //  - desc  : petite phrase sous le nom (dans la langue du CV)
+    //  - file  : chemin du PDF, toujours dans "cv/"
+    //  - theme : style de la page quand ce CV est ouvert :
+    //              "ocean" = bleu marine / bleu ciel
+    //              "pop"   = pastel, contours noirs
+    //              "paper" = sobre, noir et blanc
+    //  - dot   : couleur de la pastille dans l'onglet (code couleur, ex. "#3fa9f5")
+    //
+    // Une langue sans aucune ligne apparaît grisée (« bientôt ») sur l'accueil.
+    const CVS = [
+      // ---- CV en français ----
+      { id: "CV-PhD-FR", lang: "fr", label: "Doctorante Bioinformatique", desc: "CV destiné aux collaborateurs qui recherchent des informations détaillées.", file: "cv/CV_PhD_FR.pdf", theme: "ocean", dot: "#3fa9f5" },
+
+      // ---- CV en anglais ----
+      { id: "CV-PhD-EN", lang: "en", label: "PhD Candidate in Bioinformatics", desc: "CV for collaborators seeking detailed information.", file: "cv/CV_PhD_EN.pdf", theme: "ocean", dot: "#3fa9f5" },
+      { id: "pop-style", lang: "en", label: "PhD Candidate cartoon version", desc: "CV for collaborators seeking a more creative layout.", file: "cv/CV_design.pdf", theme: "pop", dot: "#e55bf5" },
+      { id: "neutral", lang: "en", label: "PhD Candidate plain black-and-white version", desc: "CV for collaborators seeking a minimalist approach.", file: "cv/CV_PhD_blackwhite_EN.pdf", theme: "paper", dot: "#303030" }
+      // ---- Modèle à copier pour ajouter un CV (enlève les // au début) ----
+      // { id: "...", lang: "fr", label: "...", desc: "...", file: "cv/....pdf", theme: "pop", dot: "#dfe89a" },
+    ];
+
+    // Textes de l'interface dans chaque langue
+    const UI = {
+      fr: { back: "Langue", listTitle: "Quel CV souhaitez-vous consulter ?", listLead: "Choisissez la version qui correspond à votre recherche.",
+            allCvs: "Tous les CV", open: "Ouvrir", download: "Télécharger", mobile: "L'aperçu n'a pas pu être chargé.", loading: "Chargement du CV…", see: "Voir le CV" },
+      en: { back: "Language", listTitle: "Which CV would you like to see?", listLead: "Pick the version that best matches what you're looking for.",
+            allCvs: "All CVs", open: "Open", download: "Download", mobile: "The preview couldn't be loaded.", loading: "Loading CV…", see: "View CV" },
+    };
+
+    // =========================================================
+    // FONCTIONNEMENT (pas besoin de modifier en dessous)
+    // =========================================================
+    const $ = id => document.getElementById(id);
+    const screens = { home: $("screen-home"), list: $("screen-list"), viewer: $("screen-viewer") };
+    document.querySelectorAll("[data-name]").forEach(el => el.textContent = NAME);
+
+    function showScreen(name, theme) {
+      Object.entries(screens).forEach(([k, el]) => el.hidden = k !== name);
+      document.body.dataset.theme = theme;
+      window.scrollTo(0, 0);
+    }
+
+    function renderHome() {
+      const box = $("langs");
+      box.innerHTML = "";
+      LANGS.forEach(l => {
+        const a = document.createElement("a");
+        const has = CVS.some(c => c.lang === l.code);
+        a.className = "lang" + (has ? "" : " soon");
+        a.href = "#/" + l.code;
+        a.innerHTML = `<span class="code"></span><span class="name"></span>`;
+        a.querySelector(".code").textContent = l.label;
+        a.querySelector(".name").textContent = l.name;
+        box.appendChild(a);
+      });
+      document.documentElement.lang = "fr";
+      document.title = "CV – " + NAME;
+      showScreen("home", "home");
+    }
+
+    function renderList(lang) {
+      const t = UI[lang] || UI.en;
+      $("list-back").textContent = "← " + t.back;
+      $("list-title").textContent = t.listTitle;
+      $("list-lead").textContent = t.listLead;
+      const box = $("cards");
+      box.innerHTML = "";
+      CVS.filter(c => c.lang === lang).forEach(cv => {
+        const a = document.createElement("a");
+        a.className = "card";
+        a.href = `#/${lang}/${cv.id}`;
+        a.innerHTML = `<span class="swatch ${cv.theme}"></span>
+          <span class="card-text"><div class="card-title"></div><div class="card-desc"></div></span>
+          <span class="arrow">→</span>`;
+        a.querySelector(".card-title").textContent = cv.label;
+        a.querySelector(".card-desc").textContent = cv.desc;
+        box.appendChild(a);
+      });
+      document.documentElement.lang = lang;
+      document.title = "CV – " + NAME;
+      showScreen("list", "home");
+    }
+
+    function renderViewer(cv) {
+      const t = UI[cv.lang] || UI.en;
+      $("viewer-back").textContent = "← " + t.allCvs;
+      $("viewer-back").href = "#/" + cv.lang;
+
+      const tabs = $("tabs");
+      tabs.innerHTML = "";
+      CVS.filter(c => c.lang === cv.lang).forEach(c => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("role", "tab");
+        b.setAttribute("aria-selected", c.id === cv.id);
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        dot.style.background = c.dot;
+        b.append(dot, c.label);
+        b.addEventListener("click", () => { location.hash = `#/${c.lang}/${c.id}`; });
+        tabs.appendChild(b);
+      });
+
+      $("desc").textContent = cv.desc;
+      $("open").textContent = t.open;
+      $("download").textContent = t.download;
+      $("mobile-text").textContent = t.mobile;
+      $("open-mobile").textContent = t.see;
+      $("open").href = $("open-mobile").href = $("download").href = cv.file;
+      const src = cv.file + "#view=FitH";
+      if (!$("frame").src.endsWith(src)) $("frame").src = src;
+      currentCv = cv;
+
+      document.documentElement.lang = cv.lang;
+      document.title = "CV – " + cv.label;
+      showScreen("viewer", cv.theme);
+      renderPages(cv); // après showScreen : l'écran doit être visible pour mesurer sa largeur
+    }
+
+    function route() {
+      const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+      // ancien format de lien (#design) → redirection
+      if (parts.length === 1 && !LANGS.some(l => l.code === parts[0])) {
+        const old = CVS.find(c => c.id === parts[0]);
+        if (old) { location.replace(`#/${old.lang}/${old.id}`); return; }
+      }
+      const [lang, id] = parts;
+      if (lang && id) {
+        const cv = CVS.find(c => c.lang === lang && c.id === id);
+        if (cv) return renderViewer(cv);
+      }
+      if (lang && CVS.some(c => c.lang === lang)) return renderList(lang);
+      renderHome();
+    }
+
+    // ---------- Affichage du PDF en images sur téléphone (PDF.js) ----------
+    const PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+    const isPhone = () => window.matchMedia("(max-width: 700px)").matches;
+    let currentCv = null, renderedKey = "", renderToken = 0, pdfjsPromise = null;
+
+    function loadPdfJs() {
+      if (!pdfjsPromise) {
+        pdfjsPromise = new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = PDFJS + "pdf.min.js";
+          s.onload = () => {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + "pdf.worker.min.js";
+            resolve(window.pdfjsLib);
+          };
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+      return pdfjsPromise;
+    }
+
+    async function renderPages(cv) {
+      if (!isPhone()) return;
+      const box = $("pages"), viewer = box.parentElement;
+      const width = Math.max(box.clientWidth - 20, 200);
+      const key = cv.file + "@" + width;
+      if (key === renderedKey) return;
+      renderedKey = key;
+      const token = ++renderToken;
+      const t = UI[cv.lang] || UI.en;
+      viewer.classList.remove("failed");
+      box.innerHTML = "";
+      const status = document.createElement("p");
+      status.className = "pages-status";
+      status.textContent = t.loading;
+      box.appendChild(status);
+      try {
+        const pdfjsLib = await loadPdfJs();
+        const pdf = await pdfjsLib.getDocument(cv.file).promise;
+        if (token !== renderToken) return;
+        const ratio = Math.min(window.devicePixelRatio || 1, 3);
+        for (let n = 1; n <= pdf.numPages; n++) {
+          const page = await pdf.getPage(n);
+          if (token !== renderToken) return;
+          const base = page.getViewport({ scale: 1 });
+          const vp = page.getViewport({ scale: (width / base.width) * ratio });
+          const canvas = document.createElement("canvas");
+          canvas.width = vp.width;
+          canvas.height = vp.height;
+          await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+          if (token !== renderToken) return;
+          status.remove();
+          box.appendChild(canvas); // ajoutée une fois dessinée : pas de cadre blanc pendant le chargement
+        }
+      } catch (e) {
+        if (token !== renderToken) return;
+        renderedKey = "";
+        box.innerHTML = "";
+        viewer.classList.add("failed");
+      }
+    }
+
+    // Rotation de l'écran / passage ordinateur ↔ téléphone : on redessine
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (currentCv && !screens.viewer.hidden) renderPages(currentCv);
+      }, 250);
+    });
+
+    window.addEventListener("hashchange", route);
+    route();
+  </script>
+</body>
+</html>
