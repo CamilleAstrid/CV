@@ -1,0 +1,4 @@
+Copyright (c) 2026 CamilleAstrid. Tous droits réservés.
+
+Le code source et les données de ce dépôt sont mis à disposition uniquement à des fins de consultation et d'évaluation.
+Toute reproduction, modification, distribution ou réutilisation, en tout ou en partie, sous quelque forme que ce soit, est strictement interdite sans l'autorisation écrite préalable du titulaire des droits.
