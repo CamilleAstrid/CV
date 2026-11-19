@@ -193,7 +193,48 @@
     .lang.soon { opacity: .45; pointer-events: none; }
     .lang.soon .name::after { content: " · bientôt"; }
 
-    /* ---------- Écran 2 : liste des CV ---------- */
+    /* ---------- Écran 2 : choix du profil professionnel ---------- */
+    .profile-wrap { max-width: 900px; margin: 0 auto; padding: 40px 16px 56px; text-align: center; }
+    .profile-wrap h2 { font-size: clamp(1.6rem, 5vw, 2.2rem); margin: 18px 0 8px; }
+    .profile-wrap .lead { color: var(--muted); margin: 0 0 32px; }
+    .profile-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .profile-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 190px;
+      padding: 24px 16px;
+      background: var(--surface);
+      border: 1px solid #e3e1da;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    .profile-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,0,0,.08);
+      border-color: #c9c6bc;
+    }
+    .profile-icon { font-size: 2.2rem; line-height: 1; }
+    .profile-title { font-family: var(--font-title); font-size: 1.3rem; font-weight: 600; }
+    .profile-desc { color: var(--muted); font-size: .85rem; line-height: 1.5; }
+
+    @media (max-width: 600px) {
+      .profile-grid { grid-template-columns: 1fr; gap: 12px; }
+      .profile-card {
+        min-height: 120px;
+        flex-direction: row;
+        text-align: left;
+        justify-content: flex-start;
+        padding: 20px;
+      }
+      .profile-icon { width: 48px; text-align: center; flex: 0 0 auto; }
+    }
+
+    /* ---------- Écran 3 : liste des CV ---------- */
     .list-wrap { max-width: 720px; margin: 0 auto; padding: 40px 16px 56px; }
     .list-wrap h2 { font-size: clamp(1.6rem, 5vw, 2.2rem); margin: 18px 0 8px; }
     .list-wrap .lead { color: var(--muted); margin: 0 0 28px; }
@@ -224,7 +265,7 @@
     .card-desc { color: var(--muted); font-size: .9rem; margin-top: 3px; }
     .arrow { color: var(--muted); font-size: 1.3rem; padding-right: 6px; }
 
-    /* ---------- Écran 3 : visionneuse ---------- */
+    /* ---------- Écran 4 : visionneuse ---------- */
     .viewer-screen { display: flex; flex-direction: column; min-height: 100vh; }
     .viewer-head {
       background-color: var(--head-bg);
@@ -342,7 +383,7 @@
 
   <!-- ÉCRAN 1 : choix de la langue (page partagée) -->
   <section id="screen-home" class="center" hidden>
-    <!-- ✏️ Ton nom (repris aussi dans les autres écrans via NAME plus bas) -->
+    <!-- Ton nom (repris aussi dans les autres écrans via NAME plus bas) -->
     <h1 class="home-title">
       <span class="home-name" data-name></span>
       <span class="home-cv">Curriculum Vitae</span>
@@ -351,7 +392,17 @@
     <div class="langs" id="langs"></div>
   </section>
 
-  <!-- ÉCRAN 2 : liste des CV d'une langue -->
+  <!-- ÉCRAN 2 : choix du profil professionnel -->
+  <section id="screen-profile" hidden>
+    <div class="profile-wrap">
+      <a class="back" href="#/" id="profile-back"></a>
+      <h2 id="profile-title"></h2>
+      <p class="lead" id="profile-lead"></p>
+      <div class="profile-grid" id="profiles"></div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN 3 : liste des CV d'une langue -->
   <section id="screen-list" hidden>
     <div class="list-wrap">
       <a class="back" href="#/" id="list-back"></a>
@@ -361,7 +412,7 @@
     </div>
   </section>
 
-  <!-- ÉCRAN 3 : un CV, avec les autres CV de la même langue en haut -->
+  <!-- ÉCRAN 4 : un CV, avec les autres CV de la même langue en haut -->
   <section id="screen-viewer" class="viewer-screen" hidden>
     <header class="viewer-head">
       <div class="inner">
@@ -402,11 +453,22 @@
       { code: "en", label: "EN", name: "English" },
     ];
 
+    // Profils professionnels proposés après le choix de la langue.
+    const PROFILES = [
+      { id: "these", icon: "🎓", lang: "fr", label: "Thèse", desc: "Candidatures en doctorat et recherche scientifique." }, //🎓
+      { id: "these", icon: "🎓", lang: "en", label: "PhD", desc: "PhD applications and scientific research." }, //🎓
+      { id: "bioinfo", icon: "🧬", lang: "fr", label: "Ingénieure Bioinformatique", desc: "Analyse de données biologiques, omiques et développement scientifique." }, //🧬
+      { id: "bioinfo", icon: "🧬", lang: "en", label: "Bioinformatics Engineer", desc: "Biological data analysis, omics and scientific development." }, //🧬
+      { id: "info", icon: "💻", lang: "fr", label: "Ingénieure Informatique", desc: "Développement logiciel, programmation et ingénierie informatique." }, //💻
+      { id: "info", icon: "💻", lang: "en", label: "IT Engineer", desc: "Software development, programming and IT engineering." } //💻
+    ];
+
     // Liste des CV : une ligne = un CV = un PDF dans le dossier "cv/".
     // L'ordre des lignes = l'ordre d'affichage dans la liste et les onglets.
     //
     //  - id    : nom court, sans espace ni accent → lien direct : monsite/#/fr/mon-id
     //  - lang  : "fr" ou "en"
+    //  - profile : "these", "bioinfo" ou "info" (pour filtrer par profil)
     //  - label : nom du CV affiché sur la carte et l'onglet (dans la langue du CV)
     //  - desc  : petite phrase sous le nom (dans la langue du CV)
     //  - file  : chemin du PDF, toujours dans "cv/"
@@ -419,29 +481,45 @@
     // Une langue sans aucune ligne apparaît grisée (« bientôt ») sur l'accueil.
     const CVS = [
       // ---- CV en français ----
-      { id: "CV-PhD-FR", lang: "fr", label: "Doctorante Bioinformatique", desc: "CV destiné aux collaborateurs qui recherchent des informations détaillées.", file: "cv/CV_PhD_FR.pdf", theme: "ocean", dot: "#3fa9f5" },
+      { id: "CV-PhD-FR", lang: "fr", profile: "these", label: "Doctorante Bioinformatique", desc: "CV destiné aux collaborateurs qui recherchent des informations détaillées.", file: "cv/CV_PhD_FR.pdf", theme: "ocean", dot: "#3fa9f5" },
+      { id: "pop-style", lang: "fr", profile: "these", label: "Candidature de doctorat version Cartoon", desc: "CV destiné aux collaborateurs intéressés par un style plus créatif.", file: "cv/CV_design_FR.pdf", theme: "pop", dot: "#e55bf5" },
+      { id: "neutral", lang: "fr", profile: "these", label: "Candidature de doctorat version sombre", desc: "CV destiné aux collaborateurs intéressés par un style minimaliste.", file: "cv/CV_PhD_blackwhite_FR.pdf", theme: "paper", dot: "#303030" },
+      { id: "CV-Bioinfo-FR", lang: "fr", profile: "bioinfo", label: "Bioinformaticienne", desc: "CV destiné aux collaborateurs intéressés par les aspects techniques de la bioinformatique.", file: "cv/CV_Bioinfo_FR.pdf", theme: "ocean", dot: "#3fa9f5" },
+      { id: "CV-Info-FR", lang: "fr", profile: "info", label: "Ingénieure Informatique", desc: "CV destiné aux collaborateurs intéressés par un profil plus technique.", file: "cv/CV_Info_FR.pdf", theme: "ocean", dot: "#3fa9f5" },
 
       // ---- CV en anglais ----
-      { id: "CV-PhD-EN", lang: "en", label: "PhD Candidate in Bioinformatics", desc: "CV for collaborators seeking detailed information.", file: "cv/CV_PhD_EN.pdf", theme: "ocean", dot: "#3fa9f5" },
-      { id: "pop-style", lang: "en", label: "PhD Candidate cartoon version", desc: "CV for collaborators seeking a more creative layout.", file: "cv/CV_design.pdf", theme: "pop", dot: "#e55bf5" },
-      { id: "neutral", lang: "en", label: "PhD Candidate plain black-and-white version", desc: "CV for collaborators seeking a minimalist approach.", file: "cv/CV_PhD_blackwhite_EN.pdf", theme: "paper", dot: "#303030" }
+      { id: "CV-PhD-EN", lang: "en", profile: "these", label: "PhD Candidate in Bioinformatics", desc: "CV for collaborators seeking detailed information.", file: "cv/CV_PhD_EN.pdf", theme: "ocean", dot: "#3fa9f5" },
+      { id: "pop-style", lang: "en", profile: "these", label: "PhD Candidate cartoon version", desc: "CV for collaborators seeking a more creative layout.", file: "cv/CV_design_EN.pdf", theme: "pop", dot: "#e55bf5" },
+      { id: "neutral", lang: "en", profile: "these", label: "PhD Candidate plain black-and-white version", desc: "CV for collaborators seeking a minimalist approach.", file: "cv/CV_PhD_blackwhite_EN.pdf", theme: "paper", dot: "#303030" },
+      { id: "CV-Bioinfo-EN", lang: "en", profile: "bioinfo", label: "Bioinformatics Engineer", desc: "CV for collaborators interested in technical bioinformatics aspects.", file: "cv/CV_Bioinfo_EN.pdf", theme: "ocean", dot: "#3fa9f5" },
+      { id: "CV-Info-EN", lang: "en", profile: "info", label: "IT Engineer", desc: "CV for collaborators interested in a more technical profile.", file: "cv/CV_Info_EN.pdf", theme: "ocean", dot: "#3fa9f5" }
       // ---- Modèle à copier pour ajouter un CV (enlève les // au début) ----
       // { id: "...", lang: "fr", label: "...", desc: "...", file: "cv/....pdf", theme: "pop", dot: "#dfe89a" },
     ];
 
     // Textes de l'interface dans chaque langue
     const UI = {
-      fr: { back: "Langue", listTitle: "Quel CV souhaitez-vous consulter ?", listLead: "Choisissez la version qui correspond à votre recherche.",
-            allCvs: "Tous les CV", open: "Ouvrir", download: "Télécharger", mobile: "L'aperçu n'a pas pu être chargé.", loading: "Chargement du CV…", see: "Voir le CV" },
-      en: { back: "Language", listTitle: "Which CV would you like to see?", listLead: "Pick the version that best matches what you're looking for.",
-            allCvs: "All CVs", open: "Open", download: "Download", mobile: "The preview couldn't be loaded.", loading: "Loading CV…", see: "View CV" },
+      fr: { back: "Profil", profileBack: "Langue",
+            profileTitle: "Quel profil vous intéresse ?",
+            profileLead: "Choississez le type de poste qui correspond à vos besoins.",
+            listTitle: "Quel CV souhaitez-vous consulter ?",
+            listLead: "Choisissez la version qui correspond à votre recherche.",
+            allCvs: "Tous les CV", open: "Ouvrir", download: "Télécharger", mobile: "L'aperçu n'a pas pu être chargé.", loading: "Chargement du CV…", see: "Voir le CV",
+            noCvs: "Aucun CV disponible pour ce profil pour le moment." },
+      en: { back: "Profile", profileBack: "Language",
+            profileTitle: "Which profile are you interested in?",
+            profileLead: "Choose the job type that best fits your needs.",
+            listTitle: "Which CV would you like to see?",
+            listLead: "Pick the version that best matches what you're looking for.",
+            allCvs: "All CVs", open: "Open", download: "Download", mobile: "The preview couldn't be loaded.", loading: "Loading CV…", see: "View CV",
+            noCvs: "No CV available for this profile at the moment." },
     };
 
     // =========================================================
     // FONCTIONNEMENT (pas besoin de modifier en dessous)
     // =========================================================
     const $ = id => document.getElementById(id);
-    const screens = { home: $("screen-home"), list: $("screen-list"), viewer: $("screen-viewer") };
+    const screens = { home: $("screen-home"), profile: $("screen-profile"), list: $("screen-list"), viewer: $("screen-viewer") };
     document.querySelectorAll("[data-name]").forEach(el => el.textContent = NAME);
 
     function showScreen(name, theme) {
@@ -468,20 +546,64 @@
       showScreen("home", "home");
     }
 
-    function renderList(lang) {
+    function renderProfiles(lang) {
+      const t = UI[lang] || UI.en;
+      $("profile-back").textContent = "← " + t.profileBack;
+      $("profile-back").href = "#/";
+      $("profile-title").textContent = t.profileTitle;
+      $("profile-lead").textContent = t.profileLead;
+      const box = $("profiles");
+      box.innerHTML = "";
+      // Afficher uniquement les profils de la langue sélectionnée
+      PROFILES.filter(profile => profile.lang === lang).forEach(profile => {
+        const a = document.createElement("a");
+        a.className = "profile-card";
+        a.href = `#/${lang}/${profile.id}`;
+        a.innerHTML = `
+          <span class="profile-icon"></span>
+          <span class="card-text">
+            <div class="profile-title"></div>
+            <div class="profile-desc"></div>
+          </span>
+          <span class="arrow">→</span>
+        `;
+        a.querySelector(".profile-icon").textContent = profile.icon;
+        a.querySelector(".profile-title").textContent = profile.label;
+        a.querySelector(".profile-desc").textContent = profile.desc;
+        box.appendChild(a);
+      });
+      document.documentElement.lang = lang;
+      document.title = "CV – " + NAME;
+      showScreen("profile", "home");
+    }
+
+    function renderList(lang, profile) {
       const t = UI[lang] || UI.en;
       $("list-back").textContent = "← " + t.back;
+      $("list-back").href = `#/${lang}`;
       $("list-title").textContent = t.listTitle;
       $("list-lead").textContent = t.listLead;
       const box = $("cards");
       box.innerHTML = "";
-      CVS.filter(c => c.lang === lang).forEach(cv => {
+      const matchingCvs = CVS.filter( c => c.lang === lang && c.profile === profile );
+      if (matchingCvs.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "lead";
+        empty.textContent = t.noCvs;
+        box.appendChild(empty);
+      }
+      matchingCvs.forEach(cv => {
         const a = document.createElement("a");
         a.className = "card";
-        a.href = `#/${lang}/${cv.id}`;
-        a.innerHTML = `<span class="swatch ${cv.theme}"></span>
-          <span class="card-text"><div class="card-title"></div><div class="card-desc"></div></span>
-          <span class="arrow">→</span>`;
+        a.href = `#/${lang}/${profile}/${cv.id}`;
+        a.innerHTML = `
+          <span class="swatch ${cv.theme}"></span>
+          <span class="card-text">
+            <div class="card-title"></div>
+            <div class="card-desc"></div>
+          </span>
+          <span class="arrow">→</span>
+        `;
         a.querySelector(".card-title").textContent = cv.label;
         a.querySelector(".card-desc").textContent = cv.desc;
         box.appendChild(a);
@@ -494,11 +616,11 @@
     function renderViewer(cv) {
       const t = UI[cv.lang] || UI.en;
       $("viewer-back").textContent = "← " + t.allCvs;
-      $("viewer-back").href = "#/" + cv.lang;
+      $("viewer-back").href = `#/${cv.lang}/${cv.profile || "these"}`;
 
       const tabs = $("tabs");
       tabs.innerHTML = "";
-      CVS.filter(c => c.lang === cv.lang).forEach(c => {
+      CVS.filter(c => c.lang === cv.lang && c.profile === cv.profile ).forEach(c => {
         const b = document.createElement("button");
         b.type = "button";
         b.setAttribute("role", "tab");
@@ -528,18 +650,30 @@
     }
 
     function route() {
-      const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
-      // ancien format de lien (#design) → redirection
+      const parts = location.hash
+        .replace(/^#\/?/, "")
+        .split("/")
+        .filter(Boolean);
+      // Ancien format de lien : #design
       if (parts.length === 1 && !LANGS.some(l => l.code === parts[0])) {
         const old = CVS.find(c => c.id === parts[0]);
-        if (old) { location.replace(`#/${old.lang}/${old.id}`); return; }
+        if (old) { location.replace( `#/${old.lang}/${old.profile || "these"}/${old.id}` ); return; }
       }
-      const [lang, id] = parts;
-      if (lang && id) {
-        const cv = CVS.find(c => c.lang === lang && c.id === id);
+      const [lang, profile, id] = parts;
+      // Écran 4 : visualisation d'un CV
+      if (id) { const cv = CVS.find(c => c.lang === lang && c.profile === profile && c.id === id );
         if (cv) return renderViewer(cv);
       }
-      if (lang && CVS.some(c => c.lang === lang)) return renderList(lang);
+      // Compatibilité avec les anciens liens : #/fr/CV-PhD-FR
+      if (lang && profile) {
+        const oldCv = CVS.find(c => c.lang === lang && c.id === profile );
+        if (oldCv && !id) { return renderViewer(oldCv); }
+        // Écran 3 : liste des CV du profil
+        if (PROFILES.some(p => p.id === profile)) { return renderList(lang, profile); }
+      }
+      // Écran 2 : choix du profil
+      if (lang && CVS.some(c => c.lang === lang)) { return renderProfiles(lang); }
+      // Écran 1 : choix de la langue
       renderHome();
     }
 
